@@ -10,6 +10,7 @@ namespace GymManagement.Domain.Entities
     {
         public string Name { get; set; }
         public string Code { get; set; }
+        public string Address { get; set; }
 
         public ICollection<User> Users { get; set; }
     }

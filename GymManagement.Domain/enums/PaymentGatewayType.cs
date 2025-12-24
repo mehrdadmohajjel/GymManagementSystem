@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace GymManagement.Domain.enums
 {
-    public enum ServiceType
+    public enum PaymentGatewayType
     {
-        SessionBased = 0,
-        TimeBased = 1
+        Mellat = 1,
+        ZarinPal = 2
     }
-
 }

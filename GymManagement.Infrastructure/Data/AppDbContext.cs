@@ -22,6 +22,7 @@ namespace GymManagement.Infrastructure.Data
         public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
         public DbSet<PaymentGateway> PaymentGateways => Set<PaymentGateway>();
         public DbSet<OnlinePayment> OnlinePayments=> Set<OnlinePayment>();
+        public DbSet<UsersService> UsersServices => Set<UsersService>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
