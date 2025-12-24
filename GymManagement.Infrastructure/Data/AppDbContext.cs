@@ -25,6 +25,7 @@ namespace GymManagement.Infrastructure.Data
         public DbSet<UsersService> UsersServices => Set<UsersService>();
         public DbSet<SmsSetting> SmsSettings => Set<SmsSetting>();
         public DbSet<GymSetting> GymSettings => Set<GymSetting>();
+        public DbSet<WhatsAppSetting> WhatsAppSettings => Set<WhatsAppSetting>();
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

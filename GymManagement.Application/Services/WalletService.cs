@@ -1,4 +1,5 @@
 ﻿using GymManagement.Application.DTOs.Wallet;
+using GymManagement.Application.DTOs.WhatsApp;
 using GymManagement.Application.Interfaces;
 using GymManagement.Domain.Entities;
 using GymManagement.Domain.enums;
@@ -76,6 +77,7 @@ namespace GymManagement.Application.Services
                 })
                 .ToListAsync();
         }
+
     }
 
 }
