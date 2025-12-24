@@ -43,14 +43,15 @@ builder.Services.AddAuthentication("Bearer")
 builder.Services.AddAuthorization();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IWalletService, WalletService>();
-builder.Services.AddScoped<IPaymentService, PaymentService>();
+//builder.Services.AddScoped<IPaymentService, PaymentService>();
+
 
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    DbSeeder.SeedRoles(db);
+    DbSeeder.Seed(db);
 }
 app.UseMiddleware<ExceptionMiddleware>();
 
