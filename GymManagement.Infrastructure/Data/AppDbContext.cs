@@ -23,7 +23,9 @@ namespace GymManagement.Infrastructure.Data
         public DbSet<PaymentGateway> PaymentGateways => Set<PaymentGateway>();
         public DbSet<OnlinePayment> OnlinePayments=> Set<OnlinePayment>();
         public DbSet<UsersService> UsersServices => Set<UsersService>();
-
+        public DbSet<SmsSetting> SmsSettings => Set<SmsSetting>();
+        public DbSet<GymSetting> GymSettings => Set<GymSetting>();
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>()
