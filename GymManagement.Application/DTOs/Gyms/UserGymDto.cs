@@ -6,12 +6,8 @@ using System.Threading.Tasks;
 
 namespace GymManagement.Application.DTOs.Gyms
 {
-    public class CreateGymDto
+    public class UserGymDto
     {
-        public string Name { get; set; }
-        public string Code { get; set; }
-        public string Address { get; set; } = null!;
-
+        public long? GymId { get; set; }
     }
-
 }

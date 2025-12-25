@@ -12,5 +12,7 @@ namespace GymManagement.Application.Interfaces
         Task CreateGymAsync(CreateGymDto dto);
         Task AssignGymAdminAsync(AssignGymAdminDto dto);
         Task<List<GymListDto>> GetGymsAsync();
+        Task<long> GetUserGymAsync(long userId);
+
     }
 }

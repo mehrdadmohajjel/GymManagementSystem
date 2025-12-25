@@ -77,6 +77,9 @@ namespace GymManagement.Infrastructure.Data
                     new PaymentGateway
                     {
                         GymId = gym.Id,
+                        Username = "test",
+                        Password="as4a65s4a",
+                        TerminalId ="1",
                         GatewayType = PaymentGatewayType.ZarinPal,
                         MerchantId = "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
                         CallbackUrl = "https://yourdomain.com/api/payments/verify",
@@ -89,6 +92,7 @@ namespace GymManagement.Infrastructure.Data
                         TerminalId = "XXXXXXXX",
                         Username = "username",
                         Password = "password",
+                        MerchantId = "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
                         CallbackUrl = "https://yourdomain.com/api/payments/verify",
                         IsActive = true
                     }

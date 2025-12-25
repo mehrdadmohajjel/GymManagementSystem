@@ -38,6 +38,8 @@ namespace GymManagement.Api.Controllers
         {
             return Ok(await _gymService.GetGymsAsync());
         }
+
+
     }
 
 }

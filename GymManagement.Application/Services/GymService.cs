@@ -66,6 +66,18 @@ namespace GymManagement.Application.Services
                 })
                 .ToListAsync();
         }
+        public async Task<long> GetUserGymAsync(long userId)
+        {
+            var user = await _context.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == userId);
+
+            if (user == null)
+                throw new Exception("User not found");
+
+            return (long)user.GymId;
+            
+        }
     }
 
 }

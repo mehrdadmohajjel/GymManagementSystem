@@ -45,11 +45,17 @@ namespace GymManagement.Application.Services
 
         private string GenerateJwtToken(User user)
         {
-            var claims = new[]
+            var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        new Claim(ClaimTypes.Role, user.Role.Name),
+    };
+
+            // ✅ اضافه کردن GymId فقط اگر کاربر باشگاه دارد
+            if (user.GymId.HasValue)
             {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Role, user.Role.Name)
-        };
+                claims.Add(new Claim("gymId", user.GymId.Value.ToString()));
+            }
 
             var key = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(_config["Jwt:Key"])
@@ -69,7 +75,6 @@ namespace GymManagement.Application.Services
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-
         private RefreshToken GenerateRefreshToken(long userId)
         {
             var token = new RefreshToken

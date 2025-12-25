@@ -1,0 +1,6 @@
+
+{
+  "apiBaseUrl": "http://localhost:5051/api",
+  "tokenKey": "gym_access_token",
+  "refreshTokenKey": "gym_refresh_token"
+}
