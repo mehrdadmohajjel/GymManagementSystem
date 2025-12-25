@@ -40,9 +40,9 @@ export const authApi = {
     // decode userId و role از JWT
     const user = this.getCurrentUser()!;
 
-    // دریافت gymId از API جداگانه
-      const gymResp = await axiosInstance.get<{ gymId: number }>(`/general/${user.userId}/gym`);
-    user.gymId = gymResp.data.gymId;
+    // // دریافت gymId از API جداگانه
+    //   const gymResp = await axiosInstance.get<{ gymId: number }>(`/general/${user.userId}/gym`);
+    // user.gymId = gymResp.data.gymId;
 
     return user;
   },
@@ -106,7 +106,7 @@ getCurrentUser(): JwtPayload | null {
       role: decoded[
         "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
       ],
-      gymId: decoded.gymId ? Number(decoded.gymId) : undefined,
+      gymId: decoded.gymId ? Number(decoded.gymId) : 0,
       exp: decoded.exp
     };
   } catch {

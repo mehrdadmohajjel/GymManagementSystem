@@ -1,86 +1,24 @@
-// import { useState } from "react";
-// import { authApi } from "../api/auth.api";
-// import { useNavigate } from "react-router-dom";
-
-// export default function Login() {
-//   const [nationalCode, setNationalCode] = useState("");
-//   const [password, setPassword] = useState("");
-//   const [error, setError] = useState("");
-//   const navigate = useNavigate();
-
-//   const submit = async () => {
-//     try {
-//       const user = await authApi.login({ nationalCode, password });
-
-//       switch (user.role) {
-//         case "SystemAdmin":
-//           navigate("/dashboard/system-admin");
-//           break;
-//         case "GymAdmin":
-//           navigate("/dashboard/gym-admin");
-//           break;
-//         case "Athlete":
-//           navigate("/dashboard/athlete");
-//           break;
-//       }
-//     } catch (e: any) {
-//       setError(e.response?.data?.message || "خطا در ورود");
-//     }
-//   };
-
-//   return (
-//     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-//       <div className="bg-white w-96 p-8 rounded shadow">
-//         <h2 className="text-xl font-bold text-center mb-6">ورود به سامانه</h2>
-
-//         {error && <p className="text-red-500 mb-3">{error}</p>}
-
-//         <input
-//           className="w-full border p-2 mb-3 rounded"
-//           placeholder="کد ملی"
-//           value={nationalCode}
-//           onChange={e => setNationalCode(e.target.value)}
-//         />
-
-//         <input
-//           type="password"
-//           className="w-full border p-2 mb-4 rounded"
-//           placeholder="رمز عبور"
-//           value={password}
-//           onChange={e => setPassword(e.target.value)}
-//         />
-
-//         <button
-//           onClick={submit}
-//           className="w-full bg-indigo-600 text-white py-2 rounded"
-//         >
-//           ورود
-//         </button>
-//       </div>
-//     </div>
-//   );
-// }
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authApi } from "../api/auth.api";
-import { Form, Input, Button, message } from "antd";
 
 export default function Login() {
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [nationalCode, setNationalCode] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const onFinish = async (values: any) => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     setLoading(true);
+    setError(null);
+
     try {
-      const user = await authApi.login({
-        nationalCode: values.nationalCode,
-        password: values.password
-      });
+      // فراخوانی API لاگین
+      const user = await authApi.login({ nationalCode, password });
 
-      message.success("ورود موفقیت‌آمیز بود");
-
-      // ریدایرکت بر اساس نقش
+      // بررسی نقش و ریدایرکت
       switch (user.role) {
         case "SystemAdmin":
           navigate("/system-admin");
@@ -92,30 +30,54 @@ export default function Login() {
           navigate("/athlete");
           break;
         default:
-          navigate("/");
+          setError("نقش کاربر شناسایی نشد.");
+          authApi.logout();
       }
-    } catch (error: any) {
-      message.error(error.response?.data?.message || "خطا در ورود");
+    } catch (err: any) {
+      setError(err?.response?.data?.message || "خطا در ورود. دوباره تلاش کنید.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
-      <Form name="login" onFinish={onFinish} style={{ width: 300 }}>
-        <Form.Item name="nationalCode" rules={[{ required: true, message: "کد ملی را وارد کنید" }]}>
-          <Input placeholder="کد ملی" />
-        </Form.Item>
-        <Form.Item name="password" rules={[{ required: true, message: "رمز عبور را وارد کنید" }]}>
-          <Input.Password placeholder="رمز عبور" />
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit" loading={loading} block>
-            ورود
-          </Button>
-        </Form.Item>
-      </Form>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-8 rounded shadow-md w-full max-w-md"
+      >
+        <h2 className="text-2xl font-bold mb-6 text-center">ورود به سامانه</h2>
+
+        {error && (
+          <div className="mb-4 text-red-600 font-medium text-center">{error}</div>
+        )}
+
+        <label className="block mb-2 font-medium">کد ملی</label>
+        <input
+          type="text"
+          value={nationalCode}
+          onChange={(e) => setNationalCode(e.target.value)}
+          className="w-full p-2 mb-4 border rounded"
+          required
+        />
+
+        <label className="block mb-2 font-medium">رمز عبور</label>
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full p-2 mb-6 border rounded"
+          required
+        />
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition"
+        >
+          {loading ? "در حال ورود..." : "ورود"}
+        </button>
+      </form>
     </div>
   );
 }

@@ -1,53 +1,24 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Login from "../pages/Login";
+import { Navigate } from "react-router-dom";
 import { authApi } from "../api/auth.api";
 import type { JSX } from "react";
-import SystemAdminDashboard from "../dashboards/SystemAdminDashboard";
-import AthleteDashboard from "../dashboards/AthleteDashboard";
 
-function ProtectedRoute({ children, roles }: { children: JSX.Element; roles: string[] }) {
-  const user = authApi.getCurrentUser();
-  if (!user || !roles.includes(user.role)) {
-    return <Navigate to="/login" replace />;
-  }
-  return children;
+interface Props {
+  children: JSX.Element;
+  roles: Array<"SystemAdmin" | "GymAdmin" | "Athlete">;
 }
 
-export default function AppRouter() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<Login />} />
+export default function ProtectedRoute({ children, roles }: Props) {
+  // 1️⃣ چک توکن
+  if (!authApi.isAuthenticated()) {
+    return <Navigate to="/login" replace />;
+  }
 
-        <Route
-          path="/system-admin"
-          element={
-            <ProtectedRoute roles={["SystemAdmin"]}>
-              <SystemAdminDashboard />
-            </ProtectedRoute>
-          }
-        />
+  // 2️⃣ چک نقش
+  const role = authApi.getCurrentRole();
 
-        <Route
-          path="/gym-admin"
-          element={
-            <ProtectedRoute roles={["GymAdmin"]}>
-              <SystemAdminDashboard />
-            </ProtectedRoute>
-          }
-        />
+  if (!role || !roles.includes(role)) {
+    return <Navigate to="/login" replace />;
+  }
 
-        <Route
-          path="/athlete"
-          element={
-            <ProtectedRoute roles={["Athlete"]}>
-              <AthleteDashboard />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route path="*" element={<Navigate to="/login" replace />} />
-      </Routes>
-    </BrowserRouter>
-  );
+  return children;
 }

@@ -1,34 +1,16 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import type { JSX } from "react";
-import { authApi } from "./api/auth.api";
-import AthleteDashboard from "./dashboards/AthleteDashboard";
-import SystemAdminDashboard from "./dashboards/SystemAdminDashboard";
-import Login from "./pages/Login";
+import Login from "../pages/Login";
+import ProtectedRoute from "./ProtectedRoute";
 
-interface ProtectedRouteProps {
-  children: JSX.Element;
-  roles: Array<"SystemAdmin" | "GymAdmin" | "Athlete">;
-}
-
-function ProtectedRoute({ children, roles }: ProtectedRouteProps) {
-  const user = authApi.getCurrentUser();
-
-  if (!user || !roles.includes(user.role)) {
-    // کاربر لاگین نکرده یا نقشش مجاز نیست
-    return <Navigate to="/login" replace />;
-  }
-
-  return children;
-}
+import SystemAdminDashboard from "../dashboards/SystemAdminDashboard";
+import AthleteDashboard from "../dashboards/AthleteDashboard";
 
 export default function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* صفحه ورود */}
         <Route path="/login" element={<Login />} />
 
-        {/* داشبورد مدیر سیستم */}
         <Route
           path="/system-admin"
           element={
@@ -38,7 +20,6 @@ export default function AppRouter() {
           }
         />
 
-        {/* داشبورد مدیر باشگاه */}
         <Route
           path="/gym-admin"
           element={
@@ -48,7 +29,6 @@ export default function AppRouter() {
           }
         />
 
-        {/* داشبورد ورزشکار */}
         <Route
           path="/athlete"
           element={
@@ -58,7 +38,6 @@ export default function AppRouter() {
           }
         />
 
-        {/* ریدایرکت پیشفرض */}
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>
