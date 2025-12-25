@@ -3,24 +3,33 @@ import type { JSX } from "react";
 import { authApi } from "./api/auth.api";
 import AthleteDashboard from "./dashboards/AthleteDashboard";
 import SystemAdminDashboard from "./dashboards/SystemAdminDashboard";
+import GymAdminDashboard from "./dashboards/GymAdminDashboard";
 import Login from "./pages/Login";
 
+// تعریف enum نقش‌ها
+export enum UserRole {
+  SystemAdmin = "SystemAdmin",
+  GymAdmin = "GymAdmin",
+  Athlete = "Athlete",
+}
+
+// ProtectedRoute جدا شده
 interface ProtectedRouteProps {
   children: JSX.Element;
-  roles: Array<"SystemAdmin" | "GymAdmin" | "Athlete">;
+  roles: UserRole[];
 }
 
 function ProtectedRoute({ children, roles }: ProtectedRouteProps) {
   const user = authApi.getCurrentUser();
 
   if (!user || !roles.includes(user.role)) {
-    // کاربر لاگین نکرده یا نقشش مجاز نیست
     return <Navigate to="/login" replace />;
   }
 
   return children;
 }
 
+// AppRouter اصلی
 export default function AppRouter() {
   return (
     <BrowserRouter>
@@ -32,7 +41,7 @@ export default function AppRouter() {
         <Route
           path="/system-admin"
           element={
-            <ProtectedRoute roles={["SystemAdmin"]}>
+            <ProtectedRoute roles={[UserRole.SystemAdmin]}>
               <SystemAdminDashboard />
             </ProtectedRoute>
           }
@@ -42,8 +51,8 @@ export default function AppRouter() {
         <Route
           path="/gym-admin"
           element={
-            <ProtectedRoute roles={["GymAdmin"]}>
-              <SystemAdminDashboard />
+            <ProtectedRoute roles={[UserRole.GymAdmin]}>
+              <GymAdminDashboard />
             </ProtectedRoute>
           }
         />
@@ -52,7 +61,7 @@ export default function AppRouter() {
         <Route
           path="/athlete"
           element={
-            <ProtectedRoute roles={["Athlete"]}>
+            <ProtectedRoute roles={[UserRole.Athlete]}>
               <AthleteDashboard />
             </ProtectedRoute>
           }
