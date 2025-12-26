@@ -1,73 +1,77 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import type { JSX } from "react";
-import { authApi } from "./api/auth.api";
+import Login from "./pages/Login";
 import AthleteDashboard from "./dashboards/AthleteDashboard";
 import SystemAdminDashboard from "./dashboards/SystemAdminDashboard";
 import GymAdminDashboard from "./dashboards/GymAdminDashboard";
-import Login from "./pages/Login";
+import { authApi } from "./api/auth.api";
+import type { JSX } from "react";
+import { UserRole } from "./types/UserRole";
 
-// تعریف enum نقش‌ها
-export enum UserRole {
-  SystemAdmin = "SystemAdmin",
-  GymAdmin = "GymAdmin",
-  Athlete = "Athlete",
-}
+// enum نقش‌ها
 
-// ProtectedRoute جدا شده
-interface ProtectedRouteProps {
+
+// ProtectedRoute نهایی
+function ProtectedRoute({
+  children,
+  role,
+}: {
   children: JSX.Element;
-  roles: UserRole[];
-}
-
-function ProtectedRoute({ children, roles }: ProtectedRouteProps) {
+  role: UserRole;
+}) {
   const user = authApi.getCurrentUser();
 
-  if (!user || !roles.includes(user.role)) {
+  // اگر لاگین نیست
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  // اگر نقش مجاز نیست
+  if (user.role !== role) {
     return <Navigate to="/login" replace />;
   }
 
   return children;
 }
 
-// AppRouter اصلی
-export default function AppRouter() {
+// Router اصلی
+export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* صفحه ورود */}
+        {/* Login */}
         <Route path="/login" element={<Login />} />
 
-        {/* داشبورد مدیر سیستم */}
+        {/* System Admin */}
         <Route
           path="/system-admin"
           element={
-            <ProtectedRoute roles={[UserRole.SystemAdmin]}>
+            <ProtectedRoute role={UserRole.SystemAdmin}>
               <SystemAdminDashboard />
             </ProtectedRoute>
           }
         />
 
-        {/* داشبورد مدیر باشگاه */}
+        {/* Gym Admin */}
         <Route
           path="/gym-admin"
           element={
-            <ProtectedRoute roles={[UserRole.GymAdmin]}>
+            <ProtectedRoute role={UserRole.GymAdmin}>
               <GymAdminDashboard />
             </ProtectedRoute>
           }
         />
 
-        {/* داشبورد ورزشکار */}
+        {/* Athlete */}
         <Route
           path="/athlete"
           element={
-            <ProtectedRoute roles={[UserRole.Athlete]}>
+            <ProtectedRoute role={UserRole.Athlete}>
               <AthleteDashboard />
             </ProtectedRoute>
           }
         />
 
-        {/* ریدایرکت پیشفرض */}
+        {/* Default */}
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>

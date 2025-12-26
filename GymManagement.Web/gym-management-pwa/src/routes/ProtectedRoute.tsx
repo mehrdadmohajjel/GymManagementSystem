@@ -1,18 +1,24 @@
-import { Navigate } from "react-router-dom";
+// src/routes/ProtectedRoute.tsx
+import { Navigate, Outlet } from "react-router-dom";
 import { authApi } from "../api/auth.api";
-import type { JSX } from "react";
 
 interface Props {
-  children: JSX.Element;
-  roles: Array<"SystemAdmin" | "GymAdmin" | "Athlete">;
+  role: "SystemAdmin" | "GymAdmin" | "Athlete";
 }
 
-export default function ProtectedRoute({ children, roles }: Props) {
-  const isAuth = authApi.isAuthenticated();
-  const role = authApi.getCurrentRole();
+export default function ProtectedRoute({ role }: Props) {
+  // 1️⃣ چک لاگین
+  if (!authApi.isAuthenticated()) {
+    return <Navigate to="/login" replace />;
+  }
 
-  if (!isAuth) return <Navigate to="/login" replace />;
-  if (!role || !roles.includes(role)) return <Navigate to="/login" replace />;
+  // 2️⃣ چک نقش
+  const currentRole = authApi.getCurrentRole();
 
-  return children;
+  if (!currentRole || currentRole !== role) {
+    return <Navigate to="/login" replace />;
+  }
+
+  // 3️⃣ اجازه دسترسی
+  return <Outlet />;
 }

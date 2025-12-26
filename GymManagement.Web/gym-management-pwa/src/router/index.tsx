@@ -1,40 +1,49 @@
-import { createBrowserRouter } from "react-router-dom";
+// src/router/index.tsx
+import { createBrowserRouter, Navigate } from "react-router-dom";
+
 import Login from "../pages/Login";
-import ProtectedRoute from "../auth/ProtectedRoute";
 import SystemAdminDashboard from "../dashboards/SystemAdminDashboard";
 import AthleteDashboard from "../dashboards/AthleteDashboard";
+import GymsPage from "../dashboards/gym/GymsPage";
+import ProtectedRoute from "../routes/ProtectedRoute";
+
+
 
 export const router = createBrowserRouter([
   {
     path: "/login",
-    element: <Login />,
+    element: <Login />
   },
+
+  // -------- SYSTEM ADMIN --------
   {
     path: "/system-admin",
-    element: (
-      <ProtectedRoute roles={["SystemAdmin"]}>
-        <SystemAdminDashboard />
-      </ProtectedRoute>
-    ),
+    element: <ProtectedRoute role="SystemAdmin" />,
+    children: [
+      { index: true, element: <SystemAdminDashboard /> },
+      { path: "gyms", element: <GymsPage /> }
+    ]
   },
+
+  // -------- GYM ADMIN --------
   {
     path: "/gym-admin",
-    element: (
-      <ProtectedRoute roles={["GymAdmin"]}>
-        <SystemAdminDashboard />
-      </ProtectedRoute>
-    ),
+    element: <ProtectedRoute role="GymAdmin" />,
+    children: [
+      // { index: true, element: <GymAdminDashboard /> }
+      { index: true, element: <AthleteDashboard /> }
+
+    ]
   },
+
+  // -------- ATHLETE --------
   {
     path: "/athlete",
-    element: (
-      <ProtectedRoute roles={["Athlete"]}>
-        <AthleteDashboard />
-      </ProtectedRoute>
-    ),
+    element: <ProtectedRoute role="Athlete" />,
+    children: [
+      { index: true, element: <AthleteDashboard /> }
+    ]
   },
-  {
-    path: "*",
-    element: <Login />,
-  },
+
+  { path: "*", element: <Navigate to="/login" /> }
 ]);
