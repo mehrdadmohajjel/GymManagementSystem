@@ -1,83 +1,75 @@
-import { useState } from "react";
+import { Form, Input, Button, Card, message } from "antd";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { authApi } from "../api/auth.api";
 
 export default function Login() {
-  const navigate = useNavigate();
-  const [nationalCode, setNationalCode] = useState("");
-  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onFinish = async (values: any) => {
     setLoading(true);
-    setError(null);
-
     try {
-      // فراخوانی API لاگین
-      const user = await authApi.login({ nationalCode, password });
+      const user = await authApi.login({
+        nationalCode: values.nationalCode,
+        password: values.password
+      });
 
-      // بررسی نقش و ریدایرکت
+      message.success("ورود موفقیت‌آمیز بود");
+
+      // ✅ ریدایرکت بر اساس نقش
       switch (user.role) {
         case "SystemAdmin":
-          navigate("/system-admin");
+          navigate("/system-admin", { replace: true });
           break;
         case "GymAdmin":
-          navigate("/gym-admin");
+          navigate("/gym-admin", { replace: true });
           break;
         case "Athlete":
-          navigate("/athlete");
+          navigate("/athlete", { replace: true });
           break;
         default:
-          setError("نقش کاربر شناسایی نشد.");
+          message.error("نقش کاربر نامعتبر است");
           authApi.logout();
+          navigate("/login", { replace: true });
       }
-    } catch (err: any) {
-      setError(err?.response?.data?.message || "خطا در ورود. دوباره تلاش کنید.");
+    } catch (error: any) {
+      message.error(error.response?.data?.message || "خطا در ورود");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-8 rounded shadow-md w-full max-w-md"
-      >
-        <h2 className="text-2xl font-bold mb-6 text-center">ورود به سامانه</h2>
+    <div style={{ minHeight: "100vh" }} className="flex items-center justify-center bg-gray-100">
+      <Card title="ورود به سامانه مدیریت باشگاه" style={{ width: 380 }}>
+        <Form layout="vertical" onFinish={onFinish}>
+          <Form.Item
+            label="کد ملی"
+            name="nationalCode"
+            rules={[{ required: true, message: "کد ملی را وارد کنید" }]}
+          >
+            <Input />
+          </Form.Item>
 
-        {error && (
-          <div className="mb-4 text-red-600 font-medium text-center">{error}</div>
-        )}
+          <Form.Item
+            label="رمز عبور"
+            name="password"
+            rules={[{ required: true, message: "رمز عبور را وارد کنید" }]}
+          >
+            <Input.Password />
+          </Form.Item>
 
-        <label className="block mb-2 font-medium">کد ملی</label>
-        <input
-          type="text"
-          value={nationalCode}
-          onChange={(e) => setNationalCode(e.target.value)}
-          className="w-full p-2 mb-4 border rounded"
-          required
-        />
-
-        <label className="block mb-2 font-medium">رمز عبور</label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-2 mb-6 border rounded"
-          required
-        />
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition"
-        >
-          {loading ? "در حال ورود..." : "ورود"}
-        </button>
-      </form>
+          <Button
+            type="primary"
+            htmlType="submit"
+            loading={loading}
+            block
+          >
+            ورود
+          </Button>
+        </Form>
+      </Card>
     </div>
   );
 }

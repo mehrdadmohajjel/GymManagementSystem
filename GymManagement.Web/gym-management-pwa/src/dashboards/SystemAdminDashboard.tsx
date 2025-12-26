@@ -1,23 +1,46 @@
+import { Row, Col, Card, Statistic } from "antd";
+import {
+  ShopOutlined,
+  TeamOutlined,
+  DollarOutlined
+} from "@ant-design/icons";
+import AdminLayout from "../layouts/AdminLayout";
+
 export default function SystemAdminDashboard() {
   return (
-    <div>
-      <h2 className="text-2xl font-bold mb-4">داشبورد مدیر سیستم</h2>
+    <AdminLayout>
+      <Row gutter={16}>
+        <Col span={8}>
+          <Card>
+            <Statistic
+              title="تعداد باشگاه‌ها"
+              value={12}
+              prefix={<ShopOutlined />}
+            />
+          </Card>
+        </Col>
 
-      <div className="grid grid-cols-4 gap-4">
-        <Stat title="کل باشگاه‌ها" value="24" />
-        <Stat title="کل کاربران" value="1340" />
-        <Stat title="موجودی کیف پول‌ها" value="120,000,000" />
-        <Stat title="پرداخت امروز" value="58" />
-      </div>
-    </div>
-  );
-}
+        <Col span={8}>
+          <Card>
+            <Statistic
+              title="تعداد کاربران"
+              value={320}
+              prefix={<TeamOutlined />}
+            />
+          </Card>
+        </Col>
 
-function Stat({ title, value }: any) {
-  return (
-    <div className="bg-white p-4 rounded shadow">
-      <p className="text-gray-500 text-sm">{title}</p>
-      <p className="text-xl font-bold">{value}</p>
-    </div>
+        <Col span={8}>
+          <Card>
+            <Statistic
+              title="مجموع پرداخت‌ها"
+              value={125000000}
+              prefix={<DollarOutlined />}
+              suffix="ریال"
+            />
+          </Card>
+        </Col>
+      </Row>
+    </AdminLayout>
   );
 }

@@ -8,17 +8,11 @@ interface Props {
 }
 
 export default function ProtectedRoute({ children, roles }: Props) {
-  // 1️⃣ چک توکن
-  if (!authApi.isAuthenticated()) {
-    return <Navigate to="/login" replace />;
-  }
-
-  // 2️⃣ چک نقش
+  const isAuth = authApi.isAuthenticated();
   const role = authApi.getCurrentRole();
 
-  if (!role || !roles.includes(role)) {
-    return <Navigate to="/login" replace />;
-  }
+  if (!isAuth) return <Navigate to="/login" replace />;
+  if (!role || !roles.includes(role)) return <Navigate to="/login" replace />;
 
   return children;
 }

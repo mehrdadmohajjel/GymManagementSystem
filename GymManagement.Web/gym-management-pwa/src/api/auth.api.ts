@@ -30,22 +30,24 @@ export interface JwtPayload {
 
 export const authApi = {
   // ---------------- LOGIN ----------------
-  async login(data: LoginRequest): Promise<JwtPayload> {
-    const response = await axiosInstance.post<LoginResponse>("/auth/login", data);
+ async login(data: { nationalCode: string; password: string }) {
+  const res = await axiosInstance.post("/auth/login", data);
 
-    // ذخیره توکن‌ها
-    localStorage.setItem(AppConfig.tokenKey, response.data.accessToken);
-    localStorage.setItem(AppConfig.refreshTokenKey, response.data.refreshToken);
+  const { accessToken, refreshToken } = res.data;
 
-    // decode userId و role از JWT
-    const user = this.getCurrentUser()!;
+  // ✅ ذخیره توکن‌ها
+  this.setToken(accessToken);
+  if (refreshToken) {
+    localStorage.setItem(AppConfig.refreshTokenKey, refreshToken);
+  }
 
-    // // دریافت gymId از API جداگانه
-    //   const gymResp = await axiosInstance.get<{ gymId: number }>(`/general/${user.userId}/gym`);
-    // user.gymId = gymResp.data.gymId;
+  const user = this.getCurrentUser();
+  if (!user) {
+    throw new Error("خطا در پردازش اطلاعات کاربر");
+  }
 
-    return user;
-  },
+  return user;
+},
 
   // ---------------- REFRESH TOKEN ----------------
   async refreshToken(): Promise<JwtPayload | null> {
@@ -127,5 +129,12 @@ getCurrentUser(): JwtPayload | null {
   },
   getRefreshToken(): string | null {
     return localStorage.getItem(AppConfig.refreshTokenKey);
-  }
+  },
+  setToken(token: string) {
+  localStorage.setItem(AppConfig.tokenKey, token);
+},
+setRefreshToken(token: string) {
+  localStorage.setItem(AppConfig.refreshTokenKey, token);
+}
+
 };

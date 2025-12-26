@@ -1,43 +1,40 @@
-// src/router/index.tsx
 import { createBrowserRouter } from "react-router-dom";
-
+import Login from "../pages/Login";
 import ProtectedRoute from "../auth/ProtectedRoute";
 import SystemAdminDashboard from "../dashboards/SystemAdminDashboard";
-import Login from "../pages/Login";
 import AthleteDashboard from "../dashboards/AthleteDashboard";
-
 
 export const router = createBrowserRouter([
   {
     path: "/login",
-    element: <Login />
+    element: <Login />,
   },
   {
-    path: "/dashboard/system-admin",
+    path: "/system-admin",
     element: (
-      <ProtectedRoute role="SystemAdmin">
+      <ProtectedRoute roles={["SystemAdmin"]}>
         <SystemAdminDashboard />
       </ProtectedRoute>
-    )
+    ),
   },
   {
-    path: "/dashboard/gym-admin",
+    path: "/gym-admin",
     element: (
-      <ProtectedRoute role="GymAdmin">
+      <ProtectedRoute roles={["GymAdmin"]}>
         <SystemAdminDashboard />
       </ProtectedRoute>
-    )
+    ),
   },
   {
-    path: "/dashboard/athlete",
+    path: "/athlete",
     element: (
-      <ProtectedRoute role="Athlete">
+      <ProtectedRoute roles={["Athlete"]}>
         <AthleteDashboard />
       </ProtectedRoute>
-    )
+    ),
   },
   {
     path: "*",
-    element: <Login />
-  }
+    element: <Login />,
+  },
 ]);
