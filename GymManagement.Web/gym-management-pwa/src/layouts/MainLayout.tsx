@@ -1,24 +1,71 @@
-import { Outlet } from "react-router-dom";
+import { Layout, Grid, Drawer, Button } from "antd";
+import { MenuOutlined } from "@ant-design/icons";
+import { useState } from "react";
 
-export default function MainLayout() {
+const { Header, Content } = Layout;
+const { useBreakpoint } = Grid;
+
+interface Props {
+  menu: React.ReactNode;
+  children: React.ReactNode;
+}
+
+export default function MainLayout({ menu, children }: Props) {
+  const screens = useBreakpoint();
+  const isMobile = !screens.md;
+  const [open, setOpen] = useState(false);
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow p-4 flex justify-between">
-        <h1 className="text-xl font-bold text-indigo-600">
-          Gym Management System
-        </h1>
-        <a href="/login" className="text-indigo-600 font-medium">
-          ورود
-        </a>
-      </header>
+    <Layout style={{ minHeight: "100vh" }}>
+      {/* Header */}
+      <Header
+        style={{
+          background: "#001529",
+          color: "#fff",
+          display: "flex",
+          alignItems: "center",
+          padding: "0 16px"
+        }}
+      >
+        {isMobile && (
+          <Button
+            type="text"
+            icon={<MenuOutlined style={{ color: "#fff" }} />}
+            onClick={() => setOpen(true)}
+          />
+        )}
+        <h3 style={{ color: "#fff", margin: "0 auto" }}>Gym System</h3>
+      </Header>
 
-      <main className="p-6">
-        <Outlet />
-      </main>
+      <Layout>
+        {/* Sidebar Desktop */}
+        {!isMobile && (
+          <Layout.Sider width={220} theme="dark">
+            {menu}
+          </Layout.Sider>
+        )}
 
-      <footer className="text-center text-sm text-gray-400 py-4">
-        © 2025 Gym Management
-      </footer>
-    </div>
+        {/* Drawer Mobile */}
+        <Drawer
+          placement="left"
+          open={open}
+          onClose={() => setOpen(false)}
+          bodyStyle={{ padding: 0 }}
+        >
+          {menu}
+        </Drawer>
+
+        {/* Content */}
+        <Content
+          style={{
+            padding: 16,
+            background: "#f5f5f5",
+            overflowY: "auto"
+          }}
+        >
+          {children}
+        </Content>
+      </Layout>
+    </Layout>
   );
 }

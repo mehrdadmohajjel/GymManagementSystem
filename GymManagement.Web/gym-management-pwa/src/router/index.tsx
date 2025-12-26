@@ -4,8 +4,8 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 import Login from "../pages/Login";
 import SystemAdminDashboard from "../dashboards/SystemAdminDashboard";
 import AthleteDashboard from "../dashboards/AthleteDashboard";
-import GymsPage from "../dashboards/gym/GymsPage";
 import ProtectedRoute from "../routes/ProtectedRoute";
+import GymsPage from "../pages/system-admin/GymsPage";
 
 
 

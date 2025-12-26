@@ -39,6 +39,8 @@ export const authApi = {
   this.setToken(accessToken);
   if (refreshToken) {
     localStorage.setItem(AppConfig.refreshTokenKey, refreshToken);
+      localStorage.setItem(AppConfig.refreshTokenKey, res.data.refreshToken);
+
   }
 
   const user = this.getCurrentUser();
