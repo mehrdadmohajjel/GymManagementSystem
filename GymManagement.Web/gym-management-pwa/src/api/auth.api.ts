@@ -194,7 +194,6 @@ export const authApi = {
       accessToken: accessToken?.substring(0, 20) + '...',
       refreshToken: refreshToken?.substring(0, 20) + '...'
     });
-
     // ✅ ذخیره توکن‌ها با استفاده از AppConfig
     this.setToken(accessToken);
     this.setRefreshToken(refreshToken);
@@ -338,13 +337,13 @@ export const authApi = {
 
   // ---------------- GET TOKENS ----------------
   getToken(): string | null {
-    const token = localStorage.getItem(AppConfig.tokenKey);
+    const token = localStorage.getItem("gym_access_token");
     console.log('🔑 getToken called, found:', token ? 'Yes' : 'No');
     return token;
   },
   
   getRefreshToken(): string | null {
-    const token = localStorage.getItem(AppConfig.refreshTokenKey);
+    const token = localStorage.getItem("gym_refresh_token");
     console.log('🔄 getRefreshToken called, found:', token ? 'Yes' : 'No');
     return token;
   },

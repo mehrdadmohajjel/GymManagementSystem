@@ -9,7 +9,7 @@ namespace GymManagement.Api.Controllers
 {
     [ApiController]
     [Route("api/gyms")]
-    [Authorize(Roles = Roles.SystemAdmin)]
+    //[Authorize(Roles = "SystemAdmin")]
     public class GymsController : ControllerBase
     {
         private readonly IGymService _gymService;

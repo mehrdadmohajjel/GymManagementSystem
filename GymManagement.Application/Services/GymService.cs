@@ -29,7 +29,8 @@ namespace GymManagement.Application.Services
             var gym = new Gym
             {
                 Name = dto.Name,
-                Code = dto.Code
+                Code = dto.Code,
+                Address=dto.Address
             };
 
             _context.Gyms.Add(gym);
@@ -59,6 +60,7 @@ namespace GymManagement.Application.Services
                     Id = g.Id,
                     Name = g.Name,
                     Code = g.Code,
+                    Address=g.Address,
                     AdminFullName = _context.Users
                         .Where(u => u.GymId == g.Id && u.Role.Name == Roles.GymAdmin)
                         .Select(u => u.FirstName + " " + u.LastName)
