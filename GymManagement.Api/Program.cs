@@ -21,6 +21,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // DI
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IGymService, GymService>();
 
 // Authentication
 builder.Services.AddAuthentication("Bearer")

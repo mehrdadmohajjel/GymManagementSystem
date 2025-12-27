@@ -33,11 +33,7 @@ namespace GymManagement.Api.Controllers
             return Ok();
         }
 
-        [HttpGet("List")]
-        public async Task<IActionResult> List()
-        {
-            return Ok(await _gymService.GetGymsAsync());
-        }
+  
 
 
     }

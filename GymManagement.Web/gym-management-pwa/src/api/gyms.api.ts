@@ -6,7 +6,7 @@ import { axiosInstance } from "./axios";
 
 export const gymApi = {
 getAll: async (): Promise<Gym[]> => {
-    const res = await axiosInstance.get<Gym[]>("/gyms/List");
+    const res = await axiosInstance.get<Gym[]>("/general/GymList");
     return res.data;
   },
 

@@ -23,6 +23,11 @@ namespace GymManagement.Api.Controllers
             var result = await _gymService.GetUserGymAsync(userId);
             return Ok(result);
         }
+        [HttpGet("GymList")]
+        public async Task<IActionResult> List()
+        {
+            return Ok(await _gymService.GetGymsAsync());
+        }
 
     }
 }
