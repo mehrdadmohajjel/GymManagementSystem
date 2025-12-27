@@ -1,4 +1,5 @@
 // src/api/gym.api.ts
+import axios from "axios";
 import type { Gym } from "../types/gym";
 import { axiosInstance } from "./axios";
 
@@ -11,7 +12,7 @@ getAll: async (): Promise<Gym[]> => {
   },
 
   create: async (data: Omit<Gym, "id">): Promise<void> => {
-    await axiosInstance.post("/gyms", data);
+      await axiosInstance.post("/gyms", data);
   },
 
   update: async (id: number, data: Omit<Gym, "id">): Promise<void> => {

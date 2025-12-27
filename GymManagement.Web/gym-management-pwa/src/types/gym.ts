@@ -1,7 +1,6 @@
 export interface Gym {
   id: number;
-  title: string;
+  name: string;
+  code: string;
   address: string;
-  mobile: string;
-  isActive: boolean;
 }
