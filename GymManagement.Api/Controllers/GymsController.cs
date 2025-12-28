@@ -9,7 +9,6 @@ namespace GymManagement.Api.Controllers
 {
     [ApiController]
     [Route("api/gyms")]
-    //[Authorize(Roles = "SystemAdmin")]
     public class GymsController : ControllerBase
     {
         private readonly IGymService _gymService;
@@ -19,7 +18,8 @@ namespace GymManagement.Api.Controllers
             _gymService = gymService;
         }
 
-        [HttpPost]
+         [Authorize(Policy = "CanCreateGym")]
+         [HttpPost("createGym")]
         public async Task<IActionResult> Create(CreateGymDto dto)
         {
             await _gymService.CreateGymAsync(dto);

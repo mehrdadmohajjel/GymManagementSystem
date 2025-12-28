@@ -25,7 +25,7 @@
 
 // src/routes/ProtectedRoute.tsx
 import { Navigate, Outlet } from "react-router-dom";
-import { authApi } from "../api/auth.api";
+import { authenticateServices } from "../api/authenticateServices";
 import type { UserRole } from "../types/UserRole";
 
 interface Props {
@@ -33,22 +33,23 @@ interface Props {
 }
 
 export default function ProtectedRoute({ role }: Props) {
-  // 1️⃣ چک لاگین
-  if (!authApi.isAuthenticated()) {
+  
+    const accessToken = localStorage.getItem('access-token');
+  var result = authenticateServices.userToken(accessToken!);
+
+  if (!result?.UserRole) {
     return <Navigate to="/login" replace />;
   }
 
   // 2️⃣ اگر role مشخص شده، چک نقش
-  if (role) {
-    const currentRole = authApi.getCurrentRole();
+  // if (role) {
+  //   const currentRole = authenticateServices.getCurrentRole();
 
-    if (!currentRole) {
-      return <Navigate to="/login" replace />;
-    }
-
-    if (currentRole !== role) {
+  //   if (!currentRole) {
+  //     return <Navigate to="/login" replace />;
+  //   }
       // 🔁 ریدایرکت به داشبورد درست
-      switch (currentRole) {
+      switch (result.UserRole) {
         case "SystemAdmin":
           return <Navigate to="/system-admin" replace />;
         case "GymAdmin":
@@ -58,8 +59,6 @@ export default function ProtectedRoute({ role }: Props) {
         default:
           return <Navigate to="/login" replace />;
       }
-    }
-  }
 
   // 3️⃣ اجازه دسترسی
   return <Outlet />;

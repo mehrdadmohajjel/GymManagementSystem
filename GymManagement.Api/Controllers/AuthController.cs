@@ -1,5 +1,7 @@
 ﻿using GymManagement.Application.DTOs.Auth;
+using GymManagement.Application.DTOs.Users;
 using GymManagement.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,10 +18,24 @@ namespace GymManagement.Api.Controllers
             _authService = authService;
         }
 
-        [HttpPost("login")]
+        [HttpPost]
+        [Route("Login")]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(LoginRequestDto dto)
         {
-            return Ok(await _authService.LoginAsync(dto));
+            var clientIP = HttpContext.Connection.RemoteIpAddress?.ToString();
+            var Result = await _authService.LoginAsync(dto, clientIP!);
+            return Ok(Result);
+        }
+
+
+        [HttpGet]
+        [Route("UserInfo")]
+        [Authorize]
+        public async Task<ActionResult<UserListDto>> UserInfo(long UserId)
+        {
+            var Result = await _authService.UserInfo( HttpContext.User.GetUserId());
+            return Ok(Result);
         }
 
         [HttpPost("refresh")]

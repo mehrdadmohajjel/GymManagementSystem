@@ -1,19 +1,19 @@
 // src/pages/Login.tsx
 import { Form, Input, Button, message, Card } from "antd";
 import { useNavigate } from "react-router-dom";
-import { authApi } from "../api/auth.api";
+import { authenticateServices } from "../api/authenticateServices";
 
 export default function Login() {
   const navigate = useNavigate();
 
   const onFinish = async (values: any) => {
     try {
-      const user = await authApi.login(values);
+      const user = await authenticateServices.login(values);
       message.success("ورود موفقیت‌آمیز بود");
 
-      if (user.role === "SystemAdmin") {
+      if (user?.role === "SystemAdmin") {
         navigate("/system-admin", { replace: true });
-      } else if (user.role === "GymAdmin") {
+      } else if (user?.role === "GymAdmin") {
         navigate("/gym-admin", { replace: true });
       } else {
         navigate("/athlete", { replace: true });

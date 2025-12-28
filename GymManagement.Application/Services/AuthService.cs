@@ -1,10 +1,13 @@
-﻿using GymManagement.Application.DTOs.Auth;
+﻿using Azure.Core;
+using GymManagement.Application.DTOs.Auth;
+using GymManagement.Application.DTOs.Users;
 using GymManagement.Application.Interfaces;
 using GymManagement.Domain.Entities;
 using GymManagement.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -22,8 +25,8 @@ namespace GymManagement.Application.Services
             _context = context;
             _config = config;
         }
-
-        public async Task<AuthResponseDto> LoginAsync(LoginRequestDto dto)
+         
+        public async Task<AuthResponseDto> LoginAsync(LoginRequestDto dto, string clientIP)
         {
             var user = await _context.Users
                 .Include(x => x.Role)
@@ -43,6 +46,7 @@ namespace GymManagement.Application.Services
             };
         }
 
+
         private string GenerateJwtToken(User user)
         {
             var claims = new List<Claim>
@@ -52,9 +56,20 @@ namespace GymManagement.Application.Services
     };
 
             // ✅ اضافه کردن GymId فقط اگر کاربر باشگاه دارد
-            if (user.GymId.HasValue)
+            if (user.Id != null)
             {
-                claims.Add(new Claim("gymId", user.GymId.Value.ToString()));
+                if(user.GymId != null)
+                {
+                    claims.Add(new Claim("gymId", user.Id.ToString()));
+                }
+                else
+                {
+                    claims.Add(new Claim("gymId", "0"));
+                }
+
+                claims.Add(new Claim("UserId", user.Id.ToString()));
+                claims.Add(new Claim("UserRole", user.Role.Name.ToString())); 
+                claims.Add(new Claim("UserName", user.FirstName.ToString()+" "+ user.LastName.ToString())); 
             }
 
             var key = new SymmetricSecurityKey(
@@ -107,6 +122,22 @@ namespace GymManagement.Application.Services
                 AccessToken = GenerateJwtToken(token.User),
                 RefreshToken = token.Token,
                 Role = token.User.Role.Name
+            };
+        }
+
+        public async Task<UserListDto> UserInfo(long userId)
+        {
+            var user = await _context.Users
+                            .Include(x => x.Role)
+                            .FirstOrDefaultAsync(x => x.Id == userId);
+            return new UserListDto
+            {
+                FullName = user.FirstName + ' '  +user.LastName,
+                Id = user.Id,
+                NationalCode = user.NationalCode,
+                Role =user.Role.ToString(),
+                WalletBalance = user.WalletBalance
+
             };
         }
     }

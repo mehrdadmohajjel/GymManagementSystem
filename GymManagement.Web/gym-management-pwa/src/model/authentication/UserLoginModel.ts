@@ -1,4 +1,4 @@
-export interface LoginRequest {
+export interface UserLoginModel {
   nationalCode: string;
   password: string;
 }
