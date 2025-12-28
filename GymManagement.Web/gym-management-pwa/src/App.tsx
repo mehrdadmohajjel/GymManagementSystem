@@ -1,78 +1,26 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
-import AthleteDashboard from "./dashboards/AthleteDashboard";
+import ProtectedRoute from "./routes/ProtectedRoute";
 import SystemAdminDashboard from "./dashboards/SystemAdminDashboard";
 import GymAdminDashboard from "./dashboards/GymAdminDashboard";
-import { authApi } from "./api/auth.api";
-import type { JSX } from "react";
-import { UserRole } from "./types/UserRole";
-
-// enum نقش‌ها
+import AthleteDashboard from "./dashboards/AthleteDashboard";
 
 
-// ProtectedRoute نهایی
-function ProtectedRoute({
-  children,
-  role,
-}: {
-  children: JSX.Element;
-  role: UserRole;
-}) {
-  const user = authApi.getCurrentUser();
-
-  // اگر لاگین نیست
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-
-  // اگر نقش مجاز نیست
-  if (user.role !== role) {
-    return <Navigate to="/login" replace />;
-  }
-
-  return children;
-}
-
-// Router اصلی
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Login */}
+
+        {/* صفحه لاگین */}
         <Route path="/login" element={<Login />} />
 
-        {/* System Admin */}
-        <Route
-          path="/system-admin"
-          element={
-            <ProtectedRoute role={UserRole.SystemAdmin}>
-              <SystemAdminDashboard />
-            </ProtectedRoute>
-          }
-        />
+        {/* روت‌های محافظت‌شده */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/system-admin" element={<SystemAdminDashboard />} />
+          <Route path="/gym-admin" element={<GymAdminDashboard />} />
+          <Route path="/athlete" element={<AthleteDashboard />} />
+        </Route>
 
-        {/* Gym Admin */}
-        <Route
-          path="/gym-admin"
-          element={
-            <ProtectedRoute role={UserRole.GymAdmin}>
-              <GymAdminDashboard />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Athlete */}
-        <Route
-          path="/athlete"
-          element={
-            <ProtectedRoute role={UserRole.Athlete}>
-              <AthleteDashboard />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Default */}
-        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>
   );

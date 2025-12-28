@@ -1,7 +1,5 @@
-import React from 'react';
 import {jwtDecode} from 'jwt-decode';
 import api from './api';
-import Cookies from 'js-cookie';
 import type { AuthResultModel } from '../model/authentication/AuthResultModel';
 import type { RefreshTokenModel } from '../model/authentication/RefereshToken';
 import type { UserInfoModel } from '../model/authentication/UserInfoModel';
@@ -9,16 +7,16 @@ import type { UserLoginModel } from '../model/authentication/UserLoginModel';
 import type { UserTokenModel } from '../model/authentication/UserTokenModel';
 
 export const authenticateServices = {
-  authenticate: (res: AuthResultModel) => {
-    if (res.accessToken !== undefined)
-    {
-      Cookies.set('access-token', res.accessToken)
-      Cookies.set('refresh-token', res.refreshToken)
-      Cookies.set('role', res.role)
-    }
-    
-    return authenticateServices.userToken(res.accessToken);
-  },
+authenticate: (res: AuthResultModel) => {
+  if (res.accessToken) {
+    localStorage.setItem("access-token", res.accessToken);
+    localStorage.setItem("refresh-token", res.refreshToken);
+    localStorage.setItem("url-token", res.urlToken);
+    localStorage.setItem("role", res.role);
+  }
+  return authenticateServices.userToken(res.accessToken);
+},
+
   login: async (data: UserLoginModel): Promise<AuthResultModel | undefined> => {
     const res = await api<AuthResultModel>(
       'post',
@@ -66,7 +64,7 @@ export const authenticateServices = {
     return {
       userId: jwt.userId,
       gymId:jwt.gymId,
-      UserName:jwt.userName,
+      UserName:jwt.UserName,
       UserRole:jwt.UserRole
     };
     // return {

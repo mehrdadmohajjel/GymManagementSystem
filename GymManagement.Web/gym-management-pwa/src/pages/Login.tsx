@@ -6,22 +6,25 @@ import { authenticateServices } from "../api/authenticateServices";
 export default function Login() {
   const navigate = useNavigate();
 
-  const onFinish = async (values: any) => {
-    try {
-      const user = await authenticateServices.login(values);
-      message.success("ورود موفقیت‌آمیز بود");
+const onFinish = async (values: any) => {
+  try {
+    await authenticateServices.login(values);
+    message.success("ورود موفقیت‌آمیز بود");
 
-      if (user?.role === "SystemAdmin") {
-        navigate("/system-admin", { replace: true });
-      } else if (user?.role === "GymAdmin") {
-        navigate("/gym-admin", { replace: true });
-      } else {
-        navigate("/athlete", { replace: true });
-      }
-    } catch {
-      message.error("نام کاربری یا رمز عبور اشتباه است");
-    }
-  };
+    // فقط برو به یک مسیر عمومی
+const user = authenticateServices.userToken(
+  localStorage.getItem("access-token")!
+);
+
+navigate(
+  user?.UserRole === "SystemAdmin"
+    ? "/system-admin"
+    : "/login",
+  { replace: true }
+);  } catch {
+    message.error("نام کاربری یا رمز عبور اشتباه است");
+  }
+};
 
   return (
     <div style={{ height: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}>

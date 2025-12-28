@@ -18,10 +18,13 @@ namespace GymManagement.Api.Controllers
             _gymService = gymService;
         }
 
-         [Authorize(Policy = "CanCreateGym")]
          [HttpPost("createGym")]
         public async Task<IActionResult> Create(CreateGymDto dto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             await _gymService.CreateGymAsync(dto);
             return Ok();
         }

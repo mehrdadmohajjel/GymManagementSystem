@@ -1,65 +1,28 @@
-// // src/routes/ProtectedRoute.tsx
-// import { Navigate, Outlet } from "react-router-dom";
-// import { authApi } from "../api/auth.api";
-
-// interface Props {
-//   role: "SystemAdmin" | "GymAdmin" | "Athlete";
-// }
-
-// export default function ProtectedRoute({ role }: Props) {
-//   // 1️⃣ چک لاگین
-//   if (!authApi.isAuthenticated()) {
-//     return <Navigate to="/login" replace />;
-//   }
-
-//   // 2️⃣ چک نقش
-//   const currentRole = authApi.getCurrentRole();
-
-//   if (!currentRole || currentRole !== role) {
-//     return <Navigate to="/login" replace />;
-//   }
-
-//   // 3️⃣ اجازه دسترسی
-//   return <Outlet />;
-// }
-
-// src/routes/ProtectedRoute.tsx
 import { Navigate, Outlet } from "react-router-dom";
 import { authenticateServices } from "../api/authenticateServices";
 import type { UserRole } from "../types/UserRole";
 
 interface Props {
-  role?: UserRole; // ⬅️ اختیاری
+  role?: UserRole;
 }
 
 export default function ProtectedRoute({ role }: Props) {
-  
-    const accessToken = localStorage.getItem('access-token');
-  var result = authenticateServices.userToken(accessToken!);
+const accessToken = localStorage.getItem("access-token");
 
-  if (!result?.UserRole) {
+  if (!accessToken) {
     return <Navigate to="/login" replace />;
   }
 
-  // 2️⃣ اگر role مشخص شده، چک نقش
-  // if (role) {
-  //   const currentRole = authenticateServices.getCurrentRole();
+  const user = authenticateServices.userToken(accessToken);
 
-  //   if (!currentRole) {
-  //     return <Navigate to="/login" replace />;
-  //   }
-      // 🔁 ریدایرکت به داشبورد درست
-      switch (result.UserRole) {
-        case "SystemAdmin":
-          return <Navigate to="/system-admin" replace />;
-        case "GymAdmin":
-          return <Navigate to="/gym-admin" replace />;
-        case "Athlete":
-          return <Navigate to="/athlete" replace />;
-        default:
-          return <Navigate to="/login" replace />;
-      }
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
 
-  // 3️⃣ اجازه دسترسی
+  // اگر Role خاصی لازم است
+  if (role && user.UserRole !== role) {
+    return <Navigate to="/unauthorized" replace />;
+  }
+
   return <Outlet />;
 }

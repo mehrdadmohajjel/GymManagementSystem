@@ -5,8 +5,10 @@ function isAxiosError(object: any): object is AxiosError {
   return typeof object == 'object' && 'message' in object && 'code' in object;
 }
 
+
+
 export const getAccessToken = (): string => {
-  return Cookies.get('access-token') ?? '';
+  return localStorage.getItem('access-token') ?? '';
 };
 
 export const getUrlToken = (): string => {
@@ -32,6 +34,7 @@ export default async function api<resultType>(
   //   window.location.reload();
   //   return Promise.reject({ errors: ['برای استفاده از سیستم وارد شوید '] });
   // }
+  console.log(getAccessToken());
   const headers = needAuthenticated
     ? {
         'content-type': 'application/json',

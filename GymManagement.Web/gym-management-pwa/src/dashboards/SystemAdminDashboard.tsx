@@ -1,7 +1,5 @@
-// src/dashboards/SystemAdminDashboard.tsx
 import { Layout, Menu } from "antd";
-import { Routes, Route, useNavigate } from "react-router-dom";
-import GymsPage from "../pages/system-admin/GymsPage";
+import { Outlet, useNavigate } from "react-router-dom";
 
 const { Sider, Content } = Layout;
 
@@ -23,9 +21,8 @@ export default function SystemAdminDashboard() {
 
       <Layout>
         <Content style={{ padding: 16 }}>
-          <Routes>
-            <Route path="gyms" element={<GymsPage />} />
-          </Routes>
+          {/* ⬅️ اینجا صفحه فرزند render می‌شود */}
+          <Outlet />
         </Content>
       </Layout>
     </Layout>
