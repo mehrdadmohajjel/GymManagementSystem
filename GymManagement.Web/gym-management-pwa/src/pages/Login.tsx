@@ -16,15 +16,25 @@ const user = authenticateServices.userToken(
   localStorage.getItem("access-token")!
 );
 
-navigate(
-  user?.UserRole === "SystemAdmin"
-    ? "/system-admin"
-    : "/login",
-  { replace: true }
-);  } catch {
-    message.error("نام کاربری یا رمز عبور اشتباه است");
-  }
-};
+ switch (user.UserRole) {
+        case "SystemAdmin":
+          navigate("/system-admin", { replace: true });
+          break;
+
+        case "GymAdmin":
+          navigate("/gym-admin", { replace: true });
+          break;
+
+        case "Athlete":
+          navigate("/athlete", { replace: true });
+          break;
+
+        default:
+          navigate("/login", { replace: true });
+      }
+    } catch {
+      message.error("نام کاربری یا رمز عبور اشتباه است");
+    }};
 
   return (
     <div style={{ height: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}>

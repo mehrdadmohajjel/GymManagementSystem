@@ -1,19 +1,38 @@
-import { Card, Statistic, Row, Col } from "antd";
+import { Layout, Menu } from "antd";
+import { Outlet, useNavigate } from "react-router-dom";
+
+const { Sider, Content } = Layout;
 
 export default function GymAdminDashboard() {
-  return (
-    <Row gutter={16}>
-      <Col span={8}>
-        <Card>
-          <Statistic title="تعداد ورزشکاران" value={85} />
-        </Card>
-      </Col>
+  const navigate = useNavigate();
 
-      <Col span={8}>
-        <Card>
-          <Statistic title="درآمد ماه" value={32000000} suffix="ریال" />
-        </Card>
-      </Col>
-    </Row>
+  return (
+    <Layout style={{ minHeight: "100vh" }}>
+      <Sider collapsible>
+        <Menu
+          theme="dark"
+          mode="inline"
+          onClick={({ key }) => navigate(key)}
+          items={[
+            { key: "/gym-admin/customers", label: "باشگاه‌ها" },
+          ]}
+        />
+            <Menu
+          theme="dark"
+          mode="inline"
+          onClick={({ key }) => navigate(key)}
+          items={[
+            { key: "/gym-admin/services", label: "سرویس" },
+          ]}
+        />
+      </Sider>
+
+      <Layout>
+        <Content style={{ padding: 16 }}>
+          {/* ⬅️ اینجا صفحه فرزند render می‌شود */}
+          <Outlet />
+        </Content>
+      </Layout>
+    </Layout>
   );
 }
